@@ -20,7 +20,7 @@ export default function Root() {
         <Links />
       </head>
       <body>
-        <h1 className="text-blue-600">Hello World</h1>
+        <h1 className="text-blue-600">Word</h1>
         <Outlet />
 
         <ScrollRestoration />
