@@ -1,0 +1,6 @@
+/exercises/*/build
+/solutions/*/build
+/exercises/*/public/build
+/solutions/*/public/build
+.DS_Store
+node_modules

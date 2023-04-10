@@ -1,0 +1,14 @@
+{
+  "name": "conf-2023-advanced-remix",
+  "private": true,
+  "scripts": {
+    "dev": "node ./scripts/dev.mjs"
+  },
+  "author": "Ryan Florence <rpflorence@gmail.com>",
+  "license": "CC 4.0",
+  "workspaces": [
+    "./*",
+    "!./node_modules"
+  ],
+  "dependencies": {}
+}
