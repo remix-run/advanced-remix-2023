@@ -1,6 +1,5 @@
-/exercises/*/build
-/solutions/*/build
-/exercises/*/public/build
-/solutions/*/public/build
+/*/build
+/*/public/build
+.cache
 .DS_Store
 node_modules
