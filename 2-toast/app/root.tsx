@@ -19,7 +19,7 @@ export default function Root() {
         <Meta />
         <Links />
       </head>
-      <body>
+      <body className="bg-pink-100">
         <h1 className="text-blue-600">Beefy</h1>
         <Outlet />
 

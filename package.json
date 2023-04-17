@@ -10,5 +10,7 @@
     "./*",
     "!./node_modules"
   ],
-  "dependencies": {}
+  "dependencies": {
+    "prettier-plugin-tailwindcss": "^0.2.7"
+  }
 }

@@ -8,4 +8,11 @@ module.exports = {
     v2_normalizeFormMethod: true,
     v2_routeConvention: true,
   },
+  routes(defineRoutes) {
+    return defineRoutes(route => {
+      route("", "./exercise.tsx", {
+        index: true,
+      });
+    });
+  },
 };

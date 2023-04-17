@@ -20,7 +20,9 @@ export default function Root() {
         <Links />
       </head>
       <body>
-        <h1 className="text-blue-600">Word</h1>
+        <h1 className="my-10 text-center text-4xl font-black uppercase text-green-800 drop-shadow-md">
+          .~* Bussin Drip *~.
+        </h1>
         <Outlet />
 
         <ScrollRestoration />

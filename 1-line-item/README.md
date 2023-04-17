@@ -1,0 +1,14 @@
+- start with two fetchers, works great!
+  - especially the 0 quantity thing "just works"
+- slow network
+  - this sucks!
+  - add pending UI ... still sucks!
+- optimistic UI
+  - awesome!
+  - what about the 0 case?
+  - lol this sucks!
+- PROBLEM: the conditional rendering doesn't know the optimistic values
+- SOLUTION: move the fetcher up, pass it down
+  - oh crap, race conditions on quantity vs. add
+  - hard to cause, probably need to force it with backend setTimeouts
+- just use a single fetcher, then state for both intents are shared
