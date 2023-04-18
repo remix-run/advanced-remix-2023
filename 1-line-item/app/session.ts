@@ -52,6 +52,9 @@ export async function getCart(request: Request) {
     },
 
     update(variantId: string, quantity: number) {
+      if (quantity <= 0) {
+        return this.remove(variantId);
+      }
       let updated = false;
       for (let item of cart) {
         if (item.variantId === variantId) {
@@ -67,7 +70,10 @@ export async function getCart(request: Request) {
     },
 
     remove(variantId: string) {
-      return cart.filter((item) => item.variantId !== variantId);
+      cart = cart.filter((item) => {
+        return item.variantId !== variantId;
+      });
+      return cart;
     },
   };
 }

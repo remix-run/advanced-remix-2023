@@ -3,6 +3,7 @@ import {
   FetcherWithComponents,
   isRouteErrorResponse,
   useFetcher,
+  useFetchers,
   useLoaderData,
   useRouteError,
 } from "@remix-run/react";
@@ -16,7 +17,6 @@ export async function loader({ request }: LoaderArgs) {
 }
 
 function badRequest(body?: string) {
-  console.log(body);
   return json(body || "", {
     status: 400,
     statusText: "Bad Request",
@@ -38,6 +38,7 @@ export async function action({ request }: ActionArgs) {
 
   switch (formData.get("intent")) {
     case "add": {
+      await new Promise((res) => setTimeout(res, 5000));
       cart.add(id, 1);
       break;
     }
@@ -70,17 +71,20 @@ export default function IndexRoute() {
     0;
 
   return (
-    <div className="p-10">
-      <ul className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8">
-        {products.map((product) => (
-          <ProductCard
-            key={product.id}
-            product={product}
-            cartQuantity={getCartQuantity(product)}
-          />
-        ))}
-      </ul>
-    </div>
+    <>
+      <Cart />
+      <div className="p-10">
+        <ul className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8">
+          {products.map((product) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              cartQuantity={getCartQuantity(product)}
+            />
+          ))}
+        </ul>
+      </div>
+    </>
   );
 }
 
@@ -249,6 +253,34 @@ function Spinner({ hidden }: { hidden: boolean }) {
       ].join(" ")}
     >
       <Icon id="arrows" />
+    </div>
+  );
+}
+
+function Cart() {
+  let { cart } = useLoaderData<typeof loader>();
+  let cartMap = new Map(cart.map((i) => [i.variantId, i.quantity]));
+
+  // read values going over the network for optimistic UI
+  let fetchers = useFetchers();
+  for (let f of fetchers) {
+    if (f.formData?.get("intent") === "update") {
+      let id = f.formData.get("variantId") as string;
+      let qty = f.formData.get("quantity") as string;
+      cartMap.set(id, parseInt(qty));
+    } else if (f.formData?.get("intent") === "add") {
+      console.log(f.formData.get("intent"));
+      let id = f.formData.get("variantId") as string;
+      cartMap.set(id, 1);
+    }
+  }
+
+  let totalItems = 0;
+  for (let [, qty] of cartMap) totalItems += qty;
+
+  return (
+    <div className="absolute right-10 top-10 flex items-center gap-1">
+      <Icon id="bag" /> {totalItems}
     </div>
   );
 }

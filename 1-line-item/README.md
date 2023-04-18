@@ -12,3 +12,6 @@
   - oh crap, race conditions on quantity vs. add
   - hard to cause, probably need to force it with backend setTimeouts
 - just use a single fetcher, then state for both intents are shared
+- keep total count in the header up to date
+  - make it optimistic with useFetchers
+  - embrace `let`!
