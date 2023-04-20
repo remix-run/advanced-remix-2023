@@ -6,7 +6,7 @@ import invariant from "tiny-invariant";
 import { updateContact, getContact, type ContactRecord } from "~/data";
 
 export let meta: V2_MetaFunction = ({ data }) => {
-  if (!data.contact) {
+  if (!data?.contact) {
     return [{ title: "Not Found" }];
   }
 
@@ -74,15 +74,7 @@ export default function Contact() {
           <Form action="edit">
             <button type="submit">Edit</button>
           </Form>
-          <Form
-            method="post"
-            action="destroy"
-            onSubmit={(event) => {
-              if (!confirm("Please confirm you want to delete this record.")) {
-                event.preventDefault();
-              }
-            }}
-          >
+          <Form method="post" action="destroy" replace>
             <button type="submit">Delete</button>
           </Form>
         </div>

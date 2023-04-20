@@ -1021,6 +1021,7 @@ let fakeResponse = {
     },
   },
 };
+
 export function fakeGetProducts() {
   return fakeResponse.data.products.edges.map((p) => {
     return { ...p.node, variants: p.node.variants.edges.map((v) => v.node) };

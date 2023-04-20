@@ -54,9 +54,10 @@ const fakeContacts = {
     return updatedContact;
   },
 
-  destroy(id: string): null {
+  destroy(id: string): ContactRecord {
+    let contact = fakeContacts.records[id];
     delete fakeContacts.records[id];
-    return null;
+    return contact;
   },
 };
 
@@ -91,7 +92,8 @@ export async function updateContact(id: string, updates: ContactMutation) {
 }
 
 export async function deleteContact(id: string) {
-  await fakeContacts.destroy(id);
+  let contact = fakeContacts.destroy(id);
+  return contact;
 }
 
 [

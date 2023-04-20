@@ -15,3 +15,6 @@
 - keep total count in the header up to date
   - make it optimistic with useFetchers
   - embrace `let`!
+- click + and - really fast to cause a db error, error boundary renders
+  - try/catch it
+  - render a message just on that component

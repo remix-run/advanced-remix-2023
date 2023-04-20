@@ -7,26 +7,18 @@ import {
   useLoaderData,
   useRouteError,
 } from "@remix-run/react";
-import { type Product, fakeGetProducts } from "./data";
-import { getCart } from "./session";
+import { type Product, fakeGetProducts } from "./fake-data";
+import { getCart } from "./cart.server";
 import { useState } from "react";
 
 export async function loader({ request }: LoaderArgs) {
+  let products = fakeGetProducts();
   let cart = await getCart(request);
-  return { products: fakeGetProducts(), cart: cart.items };
-}
-
-function badRequest(body?: string) {
-  return json(body || "", {
-    status: 400,
-    statusText: "Bad Request",
-  });
-}
-
-function validate(condition: any, msg?: string): asserts condition {
-  if (!condition) {
-    throw badRequest(msg);
-  }
+  let items = await cart.read();
+  return json(
+    { products, cart: items },
+    { headers: { "Set-Cookie": await cart.commit() } }
+  );
 }
 
 export async function action({ request }: ActionArgs) {
@@ -38,7 +30,6 @@ export async function action({ request }: ActionArgs) {
 
   switch (formData.get("intent")) {
     case "add": {
-      await new Promise((res) => setTimeout(res, 5000));
       cart.add(id, 1);
       break;
     }
@@ -66,6 +57,7 @@ export async function action({ request }: ActionArgs) {
 
 export default function IndexRoute() {
   let { products, cart } = useLoaderData<typeof loader>();
+
   let getCartQuantity = (product: Product) =>
     cart.find((item) => item.variantId === product.variants[0].id)?.quantity ||
     0;
@@ -283,4 +275,17 @@ function Cart() {
       <Icon id="bag" /> {totalItems}
     </div>
   );
+}
+
+function badRequest(body?: string) {
+  return json(body || "", {
+    status: 400,
+    statusText: "Bad Request",
+  });
+}
+
+function validate(condition: any, msg?: string): asserts condition {
+  if (!condition) {
+    throw badRequest(msg);
+  }
 }
