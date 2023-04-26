@@ -18,6 +18,15 @@ let sessionStorage = createCookieSessionStorage({
 
 let toastSessionKey = "toast";
 
+export function addToast(
+  request: Request,
+  toastMessage: Omit<ToastMessage, "id">
+) {
+  let session = getToastSession(request);
+  session.add(toastMessage);
+  return session.commit();
+}
+
 export function getToastSession(request: Request) {
   async function getSession() {
     let cookieHeader = request.headers.get("Cookie");

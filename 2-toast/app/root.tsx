@@ -9,26 +9,25 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-  useCatch,
   useLoaderData,
   useSubmit,
   useNavigation,
   useFetchers,
-  useRouteError,
 } from "@remix-run/react";
 import * as React from "react";
 
 import appStylesHref from "~/app.css";
+import toastStyles from "~/toast/toast.css";
 import type { ContactRecord } from "~/data";
 import { createEmptyContact, getContacts } from "~/data";
-import { Toast } from "./toast";
-import { getToastSession } from "./toast-session";
+import { Toast } from "./toast/toast";
+import { getToastSession } from "./toast/toast.server";
 
 export async function loader({ request }: LoaderArgs) {
   const url = new URL(request.url);
   const q = url.searchParams.get("q") || undefined;
   const contacts = await getContacts(q);
-  const toasts = await getToastSession(request);
+  const toasts = getToastSession(request);
   return json(
     { contacts, q, toastMessages: await toasts.getMessages() },
     {
@@ -45,7 +44,6 @@ export async function action() {
 }
 
 export default function Root() {
-  // type inference over the network from `typeof loader`
   const { contacts, q, toastMessages } = useLoaderData<typeof loader>();
 
   const navigation = useNavigation();
@@ -55,6 +53,9 @@ export default function Root() {
     navigation.location &&
     new URLSearchParams(navigation.location.search).has("q");
 
+  const [hydrated, setHydrated] = React.useState(false);
+  React.useEffect(() => setHydrated(true));
+
   React.useEffect(() => {
     const input = document.getElementById("q");
     if (input && input instanceof HTMLInputElement && q) {
@@ -63,11 +64,12 @@ export default function Root() {
   }, [q]);
 
   return (
-    <html lang="en">
+    <html lang="en" className={hydrated ? "js" : ""}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <link rel="stylesheet" href={appStylesHref} />
+        <link rel="stylesheet" href={toastStyles} />
         <Meta />
         <Links />
       </head>

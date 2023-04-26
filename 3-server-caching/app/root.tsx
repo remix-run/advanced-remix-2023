@@ -15,13 +15,22 @@ export default function Root() {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link
+          rel="stylesheet"
+          type="text/css"
+          href="https://unpkg.com/github-markdown-css@4.0.0/github-markdown.css"
+        />
         <link rel="stylesheet" href={stylesHref} />
         <Meta />
         <Links />
       </head>
       <body>
-        <h1 className="text-blue-600">Hello World</h1>
-        <Outlet />
+        <header>
+          <p>Let's do some caching!</p>
+        </header>
+        <div className="markdown-body">
+          <Outlet />
+        </div>
 
         <ScrollRestoration />
         <Scripts />

@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { ToastMessage } from "./toast-session";
+import { useEffect, useLayoutEffect, useState } from "react";
+import { ToastMessage } from "./toast.server";
 import { useTimeout } from "./use-timeout";
 
 export function Toast({
@@ -8,6 +8,13 @@ export function Toast({
   serverMessages: ToastMessage[];
 }) {
   let [clientMessages, setMessages] = useState(messages);
+
+  useEffect(() => {
+    document.documentElement.classList.add("toast-has-js");
+    return () => {
+      document.documentElement.classList.remove("toast-has-js");
+    };
+  }, []);
 
   useEffect(() => {
     setMessages(messages.concat(clientMessages));
@@ -23,7 +30,6 @@ export function Toast({
         <ToastItem
           key={msg.id}
           onDismiss={() => {
-            console.log("on dismiss");
             remove(msg.id);
           }}
         >
@@ -34,8 +40,6 @@ export function Toast({
   ) : null;
 }
 
-const isBrowser = typeof window !== "undefined";
-
 function ToastItem({
   children,
   onDismiss,
@@ -43,7 +47,13 @@ function ToastItem({
   children: React.ReactNode;
   onDismiss: () => void;
 }) {
-  let [hidden, setHidden] = useState(isBrowser ? true : false);
+  let [hidden, setHidden] = useState(false);
+
+  if (typeof document !== "undefined") {
+    useLayoutEffect(() => {
+      setHidden(true);
+    }, []);
+  }
 
   useTimeout(() => {
     setHidden(false);
@@ -51,14 +61,21 @@ function ToastItem({
 
   useTimeout(() => {
     setHidden(true);
-  }, 4000 - 300);
+  }, 6000 - 300);
 
-  useTimeout(onDismiss, 4000);
+  useTimeout(onDismiss, 6000);
 
   return (
     <li hidden={hidden}>
       {children}{" "}
-      <button type="button" aria-label="dismiss" onClick={onDismiss}>
+      <button
+        type="button"
+        aria-label="dismiss"
+        onClick={() => {
+          setHidden(true);
+          setTimeout(onDismiss, 300);
+        }}
+      >
         <Close />
       </button>
     </li>

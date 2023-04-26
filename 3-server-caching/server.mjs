@@ -1,4 +1,6 @@
 import express from "express";
+// FIXME: gonna change to broadcastDevReady
+import { devReady } from "@remix-run/node";
 import { createRequestHandler } from "@remix-run/express";
 import build from "./build/index.js";
 import getPort from "get-port";
@@ -13,6 +15,7 @@ app.all("*", createRequestHandler({ build }));
 let port = await getPort({ port: process.env.PORT || 3000 });
 
 app.listen(port, () => {
+  devReady(build);
   let name = path.basename(new URL(".", import.meta.url).pathname);
   console.clear();
   console.log(`Running exercise "${name}"`);

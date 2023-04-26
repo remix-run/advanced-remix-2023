@@ -1,4 +1,96 @@
 /* app/tailwind.css */
-@tailwind base;
+/* @tailwind base;
 @tailwind components;
-@tailwind utilities;
+@tailwind utilities; */
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  margin: 0;
+}
+
+header {
+  background: #f0f0f0;
+  color: #333;
+  text-align: center;
+  padding: 1rem 2rem;
+  font-size: 85%;
+  margin-bottom: 2rem;
+}
+
+.markdown-body {
+  max-width: 40rem;
+  margin: auto;
+}
+
+nav {
+  display: flex;
+  align-items: center;
+  color: #888;
+}
+
+nav svg {
+  height: 1rem;
+  color: #aaa;
+}
+
+form > div {
+  display: flex;
+  align-items: center;
+}
+
+button {
+  margin-left: 0.25rem;
+  display: inline-flex;
+  align-items: center;
+  height: 2rem;
+  box-sizing: border-box;
+}
+
+button svg {
+  height: 1rem;
+  margin-left: 0.25rem;
+}
+
+input {
+  width: 20rem;
+  box-sizing: border-box;
+  height: 2rem;
+}
+
+li span {
+  font-size: 85%;
+  color: #888;
+}
+
+.markdown-body {
+  max-width: 40rem;
+  margin: auto;
+}
+
+.tags {
+  padding-left: 0 !important;
+}
+
+.tags li {
+  display: inline-block;
+  margin: 0.5rem;
+}
+
+.tags a {
+  border-radius: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  display: inline-block;
+  color: black;
+  background: #eee;
+  text-decoration: none;
+}
+
+.tags a:hover {
+  background: #ddd;
+  text-decoration: none;
+}
+
+.tags a:active {
+  background: #ccc;
+}

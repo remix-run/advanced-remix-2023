@@ -9,6 +9,7 @@ import {
 } from "@remix-run/react";
 
 import { getContact, updateContact } from "~/data";
+import { addToast } from "~/toast/toast.server";
 
 export async function loader({ params }: DataFunctionArgs) {
   invariant(params.contactId, "missing contactId param");
@@ -24,14 +25,22 @@ export async function loader({ params }: DataFunctionArgs) {
 export async function action({ params, request }: DataFunctionArgs) {
   invariant(params.contactId, "missing contactId param");
   const formData = await request.formData();
-  await updateContact(params.contactId, {
+  let contact = await updateContact(params.contactId, {
     avatar: String(formData.get("avatar")),
     firstName: String(formData.get("firstName")),
     lastName: String(formData.get("lastName")),
     notes: String(formData.get("notes")),
     github: String(formData.get("github")),
   });
-  return redirect(`/contacts/${params.contactId}`);
+
+  let cookie = await addToast(request, {
+    type: "info",
+    content: `Updated ${contact.firstName}`,
+  });
+
+  return redirect(`/contacts/${params.contactId}`, {
+    headers: { "Set-Cookie": cookie },
+  });
 }
 
 export default function EditContact() {
