@@ -1,4 +1,4 @@
-import { randomUUID } from "crypto";
+import { randomUUID } from "node:crypto";
 import { createCookie } from "@remix-run/node";
 import { PrismaClient } from "@prisma/client";
 

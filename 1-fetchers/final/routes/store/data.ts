@@ -1022,10 +1022,10 @@ let fakeResponse = {
   },
 };
 
-export function fakeGetProducts() {
+export async function fakeGetProducts() {
   return fakeResponse.data.products.edges.map((p) => {
     return { ...p.node, variants: p.node.variants.edges.map((v) => v.node) };
   });
 }
 
-export type Product = ReturnType<typeof fakeGetProducts>[0];
+export type Product = Awaited<ReturnType<typeof fakeGetProducts>>[0];
