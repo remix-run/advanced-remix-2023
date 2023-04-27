@@ -1,7 +1,9 @@
 /** @type {import('@remix-run/dev').AppConfig} */
 module.exports = {
+  appDirectory: "./final",
+  serverModuleFormat: "cjs",
+  tailwind: true,
   future: {
-    unstable_tailwind: true,
     unstable_dev: true,
     v2_errorBoundary: true,
     v2_meta: true,
@@ -9,10 +11,8 @@ module.exports = {
     v2_routeConvention: true,
   },
   routes(defineRoutes) {
-    return defineRoutes(route => {
-      route("", "./exercise.tsx", {
-        index: true,
-      });
+    return defineRoutes((route) => {
+      route("drip", "./store/route.tsx");
     });
   },
 };

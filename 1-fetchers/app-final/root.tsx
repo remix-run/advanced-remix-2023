@@ -23,7 +23,6 @@ export default function Root() {
         <h1 className="my-10 text-center text-4xl font-black uppercase text-green-800 drop-shadow-md">
           .~* Bussin Drip *~.
         </h1>
-
         <Outlet />
 
         <ScrollRestoration />
