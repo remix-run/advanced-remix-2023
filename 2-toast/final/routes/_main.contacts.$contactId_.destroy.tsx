@@ -15,5 +15,7 @@ export async function action({ request, params }: ActionArgs) {
     content: `Deleted ${contact.firstName}`,
   });
 
-  return redirect("/", { headers: { "Set-Cookie": cookie } });
+  return redirect("/", {
+    headers: { "Set-Cookie": cookie },
+  });
 }

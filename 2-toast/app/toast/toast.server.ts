@@ -3,7 +3,6 @@ import { createCookieSessionStorage } from "@remix-run/node";
 export type ToastMessage = {
   content: string;
   type: "info" | "error";
-  id: string;
 };
 
 let sessionStorage = createCookieSessionStorage({
@@ -18,7 +17,7 @@ let sessionStorage = createCookieSessionStorage({
 
 export function addToast(
   request: Request,
-  toastMessage: Omit<ToastMessage, "id">
+  toastMessage: ToastMessage
 ): Promise<string> {
   let toasts = getToastSession(request);
   toasts.add(toastMessage);
@@ -34,7 +33,7 @@ export function getToastSession(request: Request) {
     return Promise.resolve("");
   }
 
-  function add(toastMessage: Omit<ToastMessage, "id">): void {
+  function add(toastMessage: ToastMessage): void {
     // ...
   }
 

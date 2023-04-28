@@ -1,84 +1,40 @@
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { ToastMessage } from "./toast.server";
 import { useTimeout } from "./use-timeout";
 
-let animationDuration =
-  typeof document === "undefined"
-    ? 300
-    : parseInt(
-        getComputedStyle(document.documentElement).getPropertyValue(
-          "--toast-animation-duration"
-        )
-      );
-
 export function Toast({ serverMessages }: { serverMessages: ToastMessage[] }) {
-  let [clientMessages, setMessages] = useState(serverMessages);
+  let [messages, setMessages] = useState(serverMessages);
 
   useEffect(() => {
-    document.documentElement.classList.add("toast-has-js");
-    return () => {
-      document.documentElement.classList.remove("toast-has-js");
-    };
-  }, []);
-
-  useEffect(() => {
-    setMessages(serverMessages.concat(clientMessages));
+    setMessages(messages.concat(serverMessages));
   }, [serverMessages]);
 
-  let remove = (id: string) => {
-    setMessages(clientMessages.filter((alleged) => alleged.id !== id));
-  };
-
-  return clientMessages.length ? (
+  return messages.length ? (
     <ol className="toast">
-      {clientMessages.map((msg) => (
-        <ToastItem
-          key={msg.id}
-          onDismiss={() => {
-            remove(msg.id);
-          }}
-        >
-          {msg.content}
-        </ToastItem>
+      {messages.map((msg, index) => (
+        <ToastItem key={msg.content + index}>{msg.content}</ToastItem>
       ))}
     </ol>
   ) : null;
 }
 
-function ToastItem({
-  children,
-  onDismiss,
-}: {
-  children: React.ReactNode;
-  onDismiss: () => void;
-}) {
-  let [hidden, setHidden] = useState(false);
+function ToastItem({ children }: { children: React.ReactNode }) {
+  let [isHidden, setIsHidden] = useState(true);
 
-  if (typeof document !== "undefined") {
-    useLayoutEffect(() => {
-      setHidden(true);
-    }, []);
-  }
+  useEffect(() => {
+    requestAnimationFrame(() => setIsHidden(false));
+  }, []);
 
-  useTimeout(() => {
-    setHidden(false);
-  }, 10);
-
-  useTimeout(() => {
-    setHidden(true);
-  }, 6000 - animationDuration);
-
-  useTimeout(onDismiss, 6000);
+  useTimeout(() => setIsHidden(true), 6000);
 
   return (
-    <li hidden={hidden}>
+    <li hidden={isHidden}>
       {children}{" "}
       <button
         type="button"
         aria-label="dismiss"
         onClick={() => {
-          setHidden(true);
-          setTimeout(onDismiss, animationDuration);
+          setIsHidden(true);
         }}
       >
         <Close />

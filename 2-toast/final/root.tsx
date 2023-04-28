@@ -28,8 +28,10 @@ export async function loader({ request }: LoaderArgs) {
   const q = url.searchParams.get("q") || undefined;
   const contacts = await getContacts(q);
   const toasts = getToastSession(request);
+  const messages = await toasts.getMessages();
+
   return json(
-    { contacts, q, toastMessages: await toasts.getMessages() },
+    { contacts, q, toastMessages: messages },
     {
       headers: {
         "Set-Cookie": await toasts.commit(),
@@ -75,6 +77,7 @@ export default function Root() {
       </head>
       <body>
         <Toast serverMessages={toastMessages} />
+
         <div id="root">
           <div id="sidebar">
             <h1>Remix Contacts</h1>

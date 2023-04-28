@@ -8,15 +8,13 @@ import {
   useNavigation,
 } from "@remix-run/react";
 
-import { getContact, updateContact } from "final/data";
-import { addToast } from "final/toast/toast.server";
+import { getContact, updateContact } from "../data";
+import { addToast } from "../toast/toast.server";
 
 export async function loader({ params }: DataFunctionArgs) {
   invariant(params.contactId, "missing contactId param");
   const contact = await getContact(params.contactId);
   if (!contact) {
-    // Throwing a response will stop all code execution and send Remix down the
-    // "catch boundary" path. The closes `CatchBoundary` will be rendered.
     throw new Response("contact not found", { status: 404 });
   }
   return contact;
@@ -35,7 +33,7 @@ export async function action({ params, request }: DataFunctionArgs) {
 
   let cookie = await addToast(request, {
     type: "info",
-    content: `Updated ${contact.firstName}`,
+    content: `Saved ${contact.firstName}`,
   });
 
   return redirect(`/contacts/${params.contactId}`, {

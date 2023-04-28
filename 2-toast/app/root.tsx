@@ -66,6 +66,7 @@ export default function Root() {
       </head>
       <body>
         <Toast serverMessages={toastMessages} />
+
         <div id="root">
           <div id="sidebar">
             <h1>Remix Contacts</h1>

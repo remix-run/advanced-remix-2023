@@ -8,8 +8,8 @@ import {
   useNavigation,
 } from "@remix-run/react";
 
-import { getContact, updateContact } from "final/data";
-import { addToast } from "final/toast/toast.server";
+import { getContact, updateContact } from "../data";
+import { addToast } from "../toast/toast.server";
 
 export async function loader({ params }: DataFunctionArgs) {
   invariant(params.contactId, "missing contactId param");

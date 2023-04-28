@@ -3,7 +3,6 @@ import { createCookieSessionStorage } from "@remix-run/node";
 export type ToastMessage = {
   content: string;
   type: "info" | "error";
-  id: string;
 };
 
 let sessionStorage = createCookieSessionStorage({
@@ -16,42 +15,35 @@ let sessionStorage = createCookieSessionStorage({
   },
 });
 
-let toastSessionKey = "toast";
-
 export function addToast(
   request: Request,
-  toastMessage: Omit<ToastMessage, "id">
-) {
-  let session = getToastSession(request);
-  session.add(toastMessage);
-  return session.commit();
+  toastMessage: ToastMessage
+): Promise<string> {
+  let toasts = getToastSession(request);
+  toasts.add(toastMessage);
+  return toasts.commit();
 }
 
 export function getToastSession(request: Request) {
-  async function getSession() {
-    let cookieHeader = request.headers.get("Cookie");
-    return sessionStorage.getSession(cookieHeader);
-  }
-
-  async function getMessages() {
-    let session = await getSession();
-    return JSON.parse(session.get(toastSessionKey) || "[]") as ToastMessage[];
-  }
-
   let nextMessages: ToastMessage[] = [];
 
-  return {
-    getMessages,
+  async function getMessages(): Promise<ToastMessage[]> {
+    let cookie = request.headers.get("Cookie");
+    let session = await sessionStorage.getSession(cookie);
+    let messages = JSON.parse(session.get("toasts") || "[]") as ToastMessage[];
+    return messages;
+  }
 
-    async commit() {
-      let session = await getSession();
-      session.flash(toastSessionKey, JSON.stringify(nextMessages));
-      return sessionStorage.commitSession(session);
-    },
+  async function commit(): Promise<string> {
+    let cookie = request.headers.get("Cookie");
+    let session = await sessionStorage.getSession(cookie);
+    session.flash("toasts", JSON.stringify(nextMessages));
+    return sessionStorage.commitSession(session);
+  }
 
-    add(toastMessage: Omit<ToastMessage, "id">) {
-      let id = Math.random().toString(32).slice(2, 8);
-      nextMessages.unshift({ id, ...toastMessage });
-    },
-  };
+  function add(toastMessage: ToastMessage): void {
+    nextMessages.unshift(toastMessage);
+  }
+
+  return { getMessages, commit, add };
 }
