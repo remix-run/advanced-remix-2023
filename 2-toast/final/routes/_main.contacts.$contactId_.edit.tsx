@@ -15,6 +15,8 @@ export async function loader({ params }: DataFunctionArgs) {
   invariant(params.contactId, "missing contactId param");
   const contact = await getContact(params.contactId);
   if (!contact) {
+    // Throwing a response will stop all code execution and send Remix down the
+    // "catch boundary" path. The closes `CatchBoundary` will be rendered.
     throw new Response("contact not found", { status: 404 });
   }
   return contact;
@@ -31,7 +33,14 @@ export async function action({ params, request }: DataFunctionArgs) {
     github: String(formData.get("github")),
   });
 
-  return redirect(`/contacts/${params.contactId}`);
+  let cookie = await addToast(request, {
+    type: "info",
+    content: `Updated ${contact.firstName}`,
+  });
+
+  return redirect(`/contacts/${params.contactId}`, {
+    headers: { "Set-Cookie": cookie },
+  });
 }
 
 export default function EditContact() {

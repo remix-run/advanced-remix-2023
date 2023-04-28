@@ -1,81 +1,21 @@
-import { useEffect, useLayoutEffect, useState } from "react";
 import { ToastMessage } from "./toast.server";
 import { useTimeout } from "./use-timeout";
 
-export function Toast({
-  serverMessages: messages,
-}: {
-  serverMessages: ToastMessage[];
-}) {
-  let [clientMessages, setMessages] = useState(messages);
-
-  useEffect(() => {
-    document.documentElement.classList.add("toast-has-js");
-    return () => {
-      document.documentElement.classList.remove("toast-has-js");
-    };
-  }, []);
-
-  useEffect(() => {
-    setMessages(messages.concat(clientMessages));
-  }, [messages]);
-
-  let remove = (id: string) => {
-    setMessages(clientMessages.filter((alleged) => alleged.id !== id));
-  };
-
-  return clientMessages.length ? (
+export function Toast({ serverMessages }: { serverMessages: ToastMessage[] }) {
+  return serverMessages.length ? (
     <ol className="toast">
-      {clientMessages.map((msg) => (
-        <ToastItem
-          key={msg.id}
-          onDismiss={() => {
-            remove(msg.id);
-          }}
-        >
-          {msg.content}
-        </ToastItem>
+      {serverMessages.map((msg) => (
+        <ToastItem key={msg.id}>{msg.content}</ToastItem>
       ))}
     </ol>
   ) : null;
 }
 
-function ToastItem({
-  children,
-  onDismiss,
-}: {
-  children: React.ReactNode;
-  onDismiss: () => void;
-}) {
-  let [hidden, setHidden] = useState(false);
-
-  if (typeof document !== "undefined") {
-    useLayoutEffect(() => {
-      setHidden(true);
-    }, []);
-  }
-
-  useTimeout(() => {
-    setHidden(false);
-  }, 10);
-
-  useTimeout(() => {
-    setHidden(true);
-  }, 6000 - 300);
-
-  useTimeout(onDismiss, 6000);
-
+function ToastItem({ children }: { children: React.ReactNode }) {
   return (
-    <li hidden={hidden}>
+    <li>
       {children}{" "}
-      <button
-        type="button"
-        aria-label="dismiss"
-        onClick={() => {
-          setHidden(true);
-          setTimeout(onDismiss, 300);
-        }}
-      >
+      <button type="button" aria-label="dismiss">
         <Close />
       </button>
     </li>

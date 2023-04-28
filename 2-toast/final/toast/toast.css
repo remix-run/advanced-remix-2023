@@ -18,10 +18,6 @@
   z-index: -1;
 }
 
-:root {
-  --toast-animation-duration: 300ms;
-}
-
 .toast li {
   margin-top: 0.5rem;
   min-width: 15rem;
@@ -34,8 +30,7 @@
   box-shadow: 0px 1px 8px hsla(0, 0%, 0%, 0.25);
   position: relative;
   opacity: 1;
-  transition: opacity var(--toast-animation-duration) ease-in-out,
-    margin-top var(--toast-animation-duration) ease-in-out;
+  transition: opacity 300ms ease-in-out, margin-top 300ms ease-in-out;
 }
 
 .toast button {

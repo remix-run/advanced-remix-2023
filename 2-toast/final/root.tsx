@@ -21,12 +21,21 @@ import toastStyles from "./toast/toast.css";
 import type { ContactRecord } from "./data";
 import { createEmptyContact, getContacts } from "./data";
 import { Toast } from "./toast/toast";
+import { getToastSession } from "./toast/toast.server";
 
 export async function loader({ request }: LoaderArgs) {
   const url = new URL(request.url);
   const q = url.searchParams.get("q") || undefined;
   const contacts = await getContacts(q);
-  return json({ contacts, q, toastMessages: [] });
+  const toasts = getToastSession(request);
+  return json(
+    { contacts, q, toastMessages: await toasts.getMessages() },
+    {
+      headers: {
+        "Set-Cookie": await toasts.commit(),
+      },
+    }
+  );
 }
 
 export async function action() {

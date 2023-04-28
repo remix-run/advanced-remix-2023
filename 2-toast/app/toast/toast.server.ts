@@ -16,42 +16,27 @@ let sessionStorage = createCookieSessionStorage({
   },
 });
 
-let toastSessionKey = "toast";
-
 export function addToast(
   request: Request,
   toastMessage: Omit<ToastMessage, "id">
-) {
-  let session = getToastSession(request);
-  session.add(toastMessage);
-  return session.commit();
+): Promise<string> {
+  let toasts = getToastSession(request);
+  toasts.add(toastMessage);
+  return toasts.commit();
 }
 
 export function getToastSession(request: Request) {
-  async function getSession() {
-    let cookieHeader = request.headers.get("Cookie");
-    return sessionStorage.getSession(cookieHeader);
+  async function getMessages(): Promise<ToastMessage[]> {
+    return Promise.resolve([]);
   }
 
-  async function getMessages() {
-    let session = await getSession();
-    return JSON.parse(session.get(toastSessionKey) || "[]") as ToastMessage[];
+  async function commit(): Promise<string> {
+    return Promise.resolve("");
   }
 
-  let nextMessages: ToastMessage[] = [];
+  function add(toastMessage: Omit<ToastMessage, "id">): void {
+    // ...
+  }
 
-  return {
-    getMessages,
-
-    async commit() {
-      let session = await getSession();
-      session.flash(toastSessionKey, JSON.stringify(nextMessages));
-      return sessionStorage.commitSession(session);
-    },
-
-    add(toastMessage: Omit<ToastMessage, "id">) {
-      let id = Math.random().toString(32).slice(2, 8);
-      nextMessages.unshift({ id, ...toastMessage });
-    },
-  };
+  return { getMessages, commit, add };
 }
