@@ -1,5 +1,6 @@
 /** @type {import('@remix-run/dev').AppConfig} */
 module.exports = {
+  appDirectory: "app",
   serverModuleFormat: "cjs",
   tailwind: true,
   future: {

@@ -1,5 +1,16 @@
 const token = process.env.GH;
+import { createCache } from "./cache.redis";
+
+let cache = createCache();
+
 export async function fetchGitHub(path: string) {
+  let cached = await cache.get(path);
+  if (cached) {
+    console.log("✅ cache hit", path);
+    return Promise.resolve(cached);
+  }
+  console.log("❌ cache miss", path);
+
   let headers = new Headers();
   if (token) {
     headers.append("Authorization", `token ${token}`);
@@ -7,6 +18,7 @@ export async function fetchGitHub(path: string) {
 
   let res = await fetch(`https://api.github.com${path}`, { headers });
   let json = await res.json();
+  cache.set(path, json);
 
   return json;
 }
@@ -25,6 +37,11 @@ export async function fetchMarkdown({
   }
 
   let cacheKey = `${md}:${org}:${repo}`;
+  let cached = cache.get(cacheKey);
+  if (cached) {
+    console.log("✅ cache hit: md");
+    return Promise.resolve(cached);
+  }
 
   let htmlRes = await fetch(`https://api.github.com/markdown`, {
     method: "post",
@@ -39,6 +56,7 @@ export async function fetchMarkdown({
   });
 
   let html = await htmlRes.text();
+  cache.set(cacheKey, html);
 
   return html;
 }

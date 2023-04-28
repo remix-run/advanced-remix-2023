@@ -1,17 +1,8 @@
 export function createMemoryCache<T>() {
-  let cache = new Map();
   return {
-    set(key: string, value: T) {
-      cache.set(key, value);
-    },
-    get(key: string): T | undefined {
-      return cache.get(key);
-    },
-    delete(key: string) {
-      cache.delete(key);
-    },
-    dispose() {
-      cache.clear();
-    },
+    set(key: string, value: T) {},
+    get(key: string): T | undefined {},
+    delete(key: string) {},
+    dispose() {},
   };
 }

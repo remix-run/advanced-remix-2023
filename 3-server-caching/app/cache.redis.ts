@@ -1,21 +1,10 @@
 import { createClient, type RedisClientOptions } from "redis";
 
-export async function createRedisCache(options?: RedisClientOptions) {
-  let client = createClient(options);
-  await client.connect();
-
+export function createCache(options?: RedisClientOptions) {
   return {
-    set(key: string, value: any) {
-      return client.set(key, value);
-    },
-    get(key: string) {
-      return client.get(key);
-    },
-    delete(key: string) {
-      return client.del(key);
-    },
-    async dispose() {
-      await client.disconnect();
-    },
+    async set(key: string, value: string) {},
+    async get(key: string) {},
+    async delete(key: string) {},
+    async dispose() {},
   };
 }
