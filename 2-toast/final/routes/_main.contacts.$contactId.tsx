@@ -3,7 +3,7 @@ import { defer, json } from "@remix-run/node";
 import { Form, useFetcher, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 
-import { updateContact, getContact, type ContactRecord } from "final/data";
+import { updateContact, getContact, type ContactRecord } from "../data";
 
 export let meta: V2_MetaFunction = ({ data }) => {
   if (!data?.contact) {
