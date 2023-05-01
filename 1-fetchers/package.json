@@ -6,9 +6,9 @@
   },
   "dependencies": {
     "@prisma/client": "^4.13.0",
-    "@remix-run/express": "^1.16.0-pre.3",
-    "@remix-run/node": "^1.16.0-pre.3",
-    "@remix-run/react": "^1.16.0-pre.3",
+    "@remix-run/express": "^1.16.0",
+    "@remix-run/node": "^1.16.0",
+    "@remix-run/react": "^1.16.0",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "express": "4.18.2",
     "get-port": "6.1.2",
@@ -20,7 +20,7 @@
     "tiny-invariant": "^1.3.1"
   },
   "devDependencies": {
-    "@remix-run/dev": "^1.16.0-pre.3",
+    "@remix-run/dev": "^1.16.0",
     "@types/react": "18.0.34",
     "cross-env": "7.0.3",
     "nodemon": "2.0.22",
