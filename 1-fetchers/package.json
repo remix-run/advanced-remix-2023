@@ -2,7 +2,7 @@
   "name": "fetchers",
   "scripts": {
     "build": "NODE_ENV=production remix build",
-    "dev": "remix dev -c 'node server.mjs'"
+    "dev": "npx prisma generate && remix dev -c 'node server.mjs'"
   },
   "dependencies": {
     "@prisma/client": "^4.13.0",
