@@ -1,6 +1,5 @@
 import invariant from "tiny-invariant";
-import type { DataFunctionArgs } from "@remix-run/node";
-import { redirect } from "@remix-run/node";
+import { redirect, type DataFunctionArgs } from "@remix-run/node";
 import {
   Form,
   useLoaderData,
@@ -8,22 +7,25 @@ import {
   useNavigation,
 } from "@remix-run/react";
 
-import { getContact, updateContact } from "../data";
-import { addToast } from "../toast/toast.server";
+import { getTalk, updateTalk } from "../data";
 
 export async function loader({ params }: DataFunctionArgs) {
-  invariant(params.contactId, "missing contactId param");
-  const contact = await getContact(params.contactId);
-  if (!contact) {
+  invariant(params.talkId, "missing talkId param");
+
+  const talk = await getTalk(params.talkId);
+  if (!talk) {
     throw new Response("contact not found", { status: 404 });
   }
-  return contact;
+
+  return talk;
 }
 
 export async function action({ params, request }: DataFunctionArgs) {
-  invariant(params.contactId, "missing contactId param");
+  invariant(params.talkId, "missing talkId param");
+
   const formData = await request.formData();
-  let contact = await updateContact(params.contactId, {
+
+  await updateTalk(params.talkId, {
     avatar: String(formData.get("avatar")),
     firstName: String(formData.get("firstName")),
     lastName: String(formData.get("lastName")),
@@ -31,7 +33,7 @@ export async function action({ params, request }: DataFunctionArgs) {
     github: String(formData.get("github")),
   });
 
-  return redirect(`/contacts/${params.contactId}`);
+  return redirect(`/talks/${params.talkId}`);
 }
 
 export default function EditContact() {

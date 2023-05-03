@@ -1,74 +1,62 @@
-import type { DataFunctionArgs, V2_MetaFunction } from "@remix-run/node";
-import { defer, json } from "@remix-run/node";
+import { json, type DataFunctionArgs } from "@remix-run/node";
 import { Form, useFetcher, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 
-import { updateContact, getContact, type ContactRecord } from "../data";
-
-export let meta: V2_MetaFunction = ({ data }) => {
-  if (!data?.contact) {
-    return [{ title: "Not Found" }];
-  }
-
-  return [
-    {
-      title: data.contact.firstName,
-    },
-  ];
-};
+import { updateTalk, getTalk, type TalkRecord } from "../data";
 
 export async function loader({ params }: DataFunctionArgs) {
-  invariant(params.contactId, "missing contactId param");
-  const contact = await getContact(params.contactId);
-  if (!contact) {
+  invariant(params.talkId, "missing talkId param");
+
+  const talk = await getTalk(params.talkId);
+  if (!talk) {
     throw new Response("Contact not found", { status: 404 });
   }
 
-  return json({ contact });
+  return json({ talk });
 }
 
 export async function action({ params, request }: DataFunctionArgs) {
-  invariant(params.contactId, "missing contactId param");
+  invariant(params.talkId, "missing talkId param");
   const formData = await request.formData();
   const favorite = formData.get("favorite") === "true";
-  return updateContact(params.contactId, { favorite });
+  return updateTalk(params.talkId, { favorite });
 }
 
-export default function Contact() {
-  const { contact } = useLoaderData<typeof loader>();
+export default function Talk() {
+  const { talk } = useLoaderData<typeof loader>();
 
   return (
     <div id="contact">
       <div>
-        <img key={contact.avatar} src={contact.avatar} />
+        <img key={talk.avatar} src={talk.avatar} />
       </div>
 
       <div>
         <h1>
-          {contact.firstName || contact.lastName ? (
+          {talk.firstName || talk.lastName ? (
             <>
-              {contact.firstName} {contact.lastName}
+              {talk.firstName} {talk.lastName}
             </>
           ) : (
             <i>No Name</i>
           )}{" "}
-          <Favorite contact={contact} />
+          <Favorite talk={talk} />
         </h1>
 
-        {contact.github && (
+        {talk.github && (
           <p>
             <a
               className="github-link"
               target="_blank"
-              href={`https://github.com/${contact.github}`}
+              href={`https://github.com/${talk.github}`}
               rel="noreferrer"
             >
-              {contact.github}
+              {talk.github}
             </a>
           </p>
         )}
 
-        {contact.notes && <p>{contact.notes}</p>}
+        {talk.notes && <p>{talk.notes}</p>}
 
         <div>
           <Form action="edit">
@@ -83,9 +71,9 @@ export default function Contact() {
   );
 }
 
-function Favorite({ contact }: { contact: ContactRecord }) {
+function Favorite({ talk }: { talk: TalkRecord }) {
   const fetcher = useFetcher<typeof action>();
-  let favorite = contact.favorite;
+  let favorite = talk.favorite;
   if (fetcher.formData) {
     favorite = fetcher.formData.get("favorite") === "true";
   }
