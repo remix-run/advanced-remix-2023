@@ -14,7 +14,7 @@ export async function loader({ params }: DataFunctionArgs) {
 
   const talk = await getTalk(params.talkId);
   if (!talk) {
-    throw new Response("contact not found", { status: 404 });
+    throw new Response("talk not found", { status: 404 });
   }
 
   return talk;
@@ -37,56 +37,72 @@ export async function action({ params, request }: DataFunctionArgs) {
 }
 
 export default function EditContact() {
-  const contact = useLoaderData<typeof loader>();
+  const talk = useLoaderData<typeof loader>();
   const navigate = useNavigate();
   const navigation = useNavigation();
   const isSaving = navigation.formData?.get("intent") === "edit";
 
   return (
-    <Form method="post" id="contact-form">
-      <p>
-        <span>Name</span>
+    <Form method="post" className="flex flex-col max-w-2xl gap-4 p-4">
+      <p className="flex items-center">
+        <span className="w-32">First Name</span>
         <input
           autoFocus
           placeholder="First"
           aria-label="First name"
           type="text"
           name="firstName"
-          defaultValue={contact.firstName}
+          defaultValue={talk.firstName}
+          className="border-gray-300 rounded-sm grow"
         />
+      </p>
+      <p className="flex items-center">
+        <span className="w-32">Last Name</span>
         <input
           placeholder="Last"
           aria-label="Last name"
           type="text"
           name="lastName"
-          defaultValue={contact.lastName}
+          defaultValue={talk.lastName}
+          className="border-gray-300 rounded-sm grow"
         />
       </p>
-      <label>
-        <span>GitHub</span>
+      <label className="flex items-center">
+        <span className="w-32">GitHub</span>
         <input
           type="text"
           name="github"
-          placeholder="@jack"
-          defaultValue={contact.github}
+          defaultValue={talk.github}
+          className="border-gray-300 rounded-sm grow"
         />
       </label>
-      <label>
-        <span>Avatar URL</span>
+      <label className="flex items-center">
+        <span className="w-32">Avatar URL</span>
         <input
           placeholder="https://example.com/avatar.jpg"
           aria-label="Avatar URL"
           type="text"
           name="avatar"
-          defaultValue={contact.avatar}
+          defaultValue={talk.avatar}
+          className="border-gray-300 rounded-sm grow"
         />
       </label>
-      <label>
-        <span>Notes</span>
-        <textarea name="notes" defaultValue={contact.notes} rows={6} />
+      <label className="flex">
+        <span className="w-32 pt-1">Notes</span>
+        <textarea
+          name="notes"
+          defaultValue={talk.notes}
+          rows={6}
+          className="border-gray-300 rounded-sm grow"
+        />
       </label>
-      <p>
-        <button type="submit" name="intent" value="edit">
+      <p className="flex gap-2 ml-32">
+        <button
+          type="submit"
+          name="intent"
+          value="edit"
+          className="px-4 py-2 font-medium text-blue-500 border border-gray-300 rounded-sm active:bg-gray-100"
+        >
           {isSaving ? "Saving..." : "Save"}
         </button>
         <button
@@ -94,6 +110,7 @@ export default function EditContact() {
           onClick={() => {
             navigate(-1);
           }}
+          className="px-4 py-2 font-medium border border-gray-300 rounded-sm active:bg-gray-100"
         >
           Cancel
         </button>
