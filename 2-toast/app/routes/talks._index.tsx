@@ -7,47 +7,24 @@ import {
   useNavigation,
 } from "@remix-run/react";
 
-import { deleteTalk, getTalk, updateTalk } from "../data";
-
-export async function loader({ params }: DataFunctionArgs) {
-  invariant(params.talkId, "missing talkId param");
-
-  const talk = await getTalk(params.talkId);
-  if (!talk) {
-    throw new Response("Talk Not Found", { status: 404 });
-  }
-
-  return talk;
-}
+import { createTalk } from "../data";
 
 export async function action({ params, request }: DataFunctionArgs) {
-  invariant(params.talkId, "missing talkId param");
-
   const formData = await request.formData();
 
-  if (formData.get("intent") === "delete") {
-    await deleteTalk(params.talkId);
-    return redirect("/talks");
-  }
+  const talk = await createTalk({
+    firstName: String(formData.get("firstName")),
+    lastName: String(formData.get("lastName")),
+    github: String(formData.get("github")),
+    avatar: String(formData.get("avatar")),
+    favorite: formData.get("favorite") === "on",
+    notes: String(formData.get("notes")),
+  });
 
-  if (formData.get("intent") === "edit") {
-    await updateTalk(params.talkId, {
-      firstName: String(formData.get("firstName")),
-      lastName: String(formData.get("lastName")),
-      github: String(formData.get("github")),
-      avatar: String(formData.get("avatar")),
-      favorite: formData.get("favorite") === "on",
-      notes: String(formData.get("notes")),
-    });
-
-    return redirect(`/talks/${params.talkId}`);
-  }
-
-  throw new Response("Bad Request", { status: 400 });
+  return redirect(`/talks/${talk.id}`);
 }
 
 export default function EditContact() {
-  const talk = useLoaderData<typeof loader>();
   const navigate = useNavigate();
   const navigation = useNavigation();
   const isSaving = navigation.formData?.get("intent") === "edit";
@@ -62,7 +39,6 @@ export default function EditContact() {
           aria-label="First name"
           type="text"
           name="firstName"
-          defaultValue={talk.firstName}
           className="grow rounded-sm border-gray-300"
         />
       </p>
@@ -73,7 +49,6 @@ export default function EditContact() {
           aria-label="Last name"
           type="text"
           name="lastName"
-          defaultValue={talk.lastName}
           className="grow rounded-sm border-gray-300"
         />
       </p>
@@ -82,7 +57,6 @@ export default function EditContact() {
         <input
           type="text"
           name="github"
-          defaultValue={talk.github}
           className="grow rounded-sm border-gray-300"
         />
       </label>
@@ -93,7 +67,6 @@ export default function EditContact() {
           aria-label="Avatar"
           type="text"
           name="avatar"
-          defaultValue={talk.avatar}
           className="grow rounded-sm border-gray-300"
         />
       </label>
@@ -103,7 +76,6 @@ export default function EditContact() {
           aria-label="Favorite"
           type="checkbox"
           name="favorite"
-          defaultChecked={talk.favorite}
           className="border-gray-300"
         />
       </label>
@@ -111,7 +83,6 @@ export default function EditContact() {
         <span className="w-32 pt-1">Notes</span>
         <textarea
           name="notes"
-          defaultValue={talk.notes}
           rows={6}
           className="grow rounded-sm border-gray-300"
         />
@@ -124,15 +95,6 @@ export default function EditContact() {
           className="rounded-sm border border-gray-300 px-4 py-2 font-medium text-blue-500 active:bg-gray-100"
         >
           {isSaving ? "Saving..." : "Save"}
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            navigate(-1);
-          }}
-          className="rounded-sm border border-gray-300 px-4 py-2 font-medium active:bg-gray-100"
-        >
-          Cancel
         </button>
       </p>
     </Form>

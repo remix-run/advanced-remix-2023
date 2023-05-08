@@ -29,16 +29,16 @@ export default function Talk() {
         <div>{talk.lastName}</div>
       </div>
       <div className="flex items-center">
+        <div className="w-32 font-medium">Github</div>
+        <div className="grow font-medium">{talk.github}</div>
+      </div>
+      <div className="flex items-center">
         <div className="w-32 font-medium">Avatar</div>
         <div>{talk.avatar}</div>
       </div>
       <div className="flex items-center">
         <div className="w-32 font-medium">Favorite</div>
         <input type="checkbox" disabled checked={talk.favorite} />
-      </div>
-      <div className="flex items-center">
-        <div className="w-32 font-medium">Github</div>
-        <div className="grow font-medium">{talk.github}</div>
       </div>
       <div className="flex items-center">
         <div className="w-32 font-medium">Notes</div>

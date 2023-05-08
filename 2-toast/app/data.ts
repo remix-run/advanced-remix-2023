@@ -71,8 +71,8 @@ export async function getTalks(query?: string) {
   return talks.sort(sortBy("last", "createdAt"));
 }
 
-export async function createEmptyTalk() {
-  const talk = await fakeTalks.create({});
+export async function createTalk(params: TalkMutation = {}) {
+  const talk = await fakeTalks.create(params);
   return talk;
 }
 
@@ -148,5 +148,5 @@ export async function deleteTalk(id: string) {
   },
 ].forEach((contact) => {
   let id = `${contact.firstName}-${contact.lastName}`.toLowerCase();
-  fakeTalks.create({ id, ...contact });
+  fakeTalks.create({ id, favorite: false, ...contact });
 });

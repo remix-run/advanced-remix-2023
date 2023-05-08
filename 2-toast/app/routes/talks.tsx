@@ -1,16 +1,11 @@
-import { type LoaderArgs, json, redirect } from "@remix-run/node";
-import { Form, Link, Outlet, useLoaderData } from "@remix-run/react";
+import { type LoaderArgs, json } from "@remix-run/node";
+import { Link, Outlet, useLoaderData } from "@remix-run/react";
 
-import { createEmptyTalk, getTalks } from "../data";
+import { getTalks } from "../data";
 
 export async function loader({}: LoaderArgs) {
   const talks = await getTalks();
   return json({ talks });
-}
-
-export async function action() {
-  const talk = await createEmptyTalk();
-  return redirect(`/talks/${talk.id}/edit`);
 }
 
 export default function Root() {
@@ -21,14 +16,11 @@ export default function Root() {
       <div className="h-full w-1/4 shrink-0 overflow-auto">
         <nav className="p-4">
           <h1 className="mb-4 text-xl font-bold">Talks</h1>
-          <Form method="post" className="mb-4">
-            <button
-              className="rounded-sm border px-4 py-2 active:bg-gray-100"
-              type="submit"
-            >
-              Create New Talk
-            </button>
-          </Form>
+          <p className="mb-4">
+            <Link to="." className="text-blue-500 underline">
+              Create new talk
+            </Link>
+          </p>
           {talks.length ? (
             <ul role="nav" className="pl-4">
               {talks.map((talk) => (
